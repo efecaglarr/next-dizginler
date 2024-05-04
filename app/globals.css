@@ -74,7 +74,7 @@
 }
 
 .home__filter-container {
-  @apply flex justify-start flex-wrap items-center gap-2;
+  @apply z-50 flex justify-start flex-wrap items-center gap-2;
 }
 
 .home__cars-wrapper {
