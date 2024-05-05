@@ -15,7 +15,7 @@ export default async function Home({ searchParams }: HomeProps) {
       <Hero />
       <Booking />
       <Values />
-      <Features />
+
 
       <div className="mt-6 padding-x max-width" id="discover">
 
@@ -49,7 +49,7 @@ export default async function Home({ searchParams }: HomeProps) {
             </h2>
           </div>
         )}
-
+        <Features />
       </div>
     </main>
   );

@@ -20,7 +20,7 @@ export const features = [
     icon: '/car-service.png',
     variant: 'green',
     description:
-      "Kuzey Kıbrıs’ta araç kiralamak için sürüş ehliyetine ihtiyaç vardır. Dizgin Rent a Car'dan araç kiralamak için en az 25 yaşında olmak gereklidir, ki Kuzey Kıbrıs’ta birçok araç kiralama şirketi aynı kıstası uygulamaktadır. Daha fazla bilgi için Kiralama Şartlarını ziyaret ediniz.",
+      "Kuzey Kıbrıs’ta araç kiralamak için sürüş ehliyetine ihtiyaç vardır. Dizgin Rent a Car'dan araç kiralamak için en az 25 yaşında olmak gereklidir. Lütfen Kiralama Şartlarımızı ziyaret ediniz.",
   },
   {
     title: 'Hızlı Rezervasyon',
