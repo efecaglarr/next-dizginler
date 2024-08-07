@@ -27,9 +27,9 @@ const Navbar = () => {
                         <h3 className='font-bold pr-4 max-md:pt-2'>İletişim Bilgileri</h3>
                         <div className='flex max-md:flex-col flex-wrap justify-between gap-5'>
                             <NextLink
-                                href="mailto:dizginlerrentacar@gmail.com?subject=Araç Kiralama&body=Merhabalar Dizginler Araç Kiralama,%0D%0A%0D%0ALütfen daha fazla bilgi alabilir miyim."
+                                href="mailto:dizginrentacar@gmail.com?subject=Araç Kiralama&body=Merhabalar Dizginler Araç Kiralama,%0D%0A%0D%0ALütfen daha fazla bilgi alabilir miyim."
                                 className="text-gray-500">
-                                dizginlerrentacar@gmail.com
+                                dizginrentacar@gmail.com
                             </NextLink>
                             <NextLink
                                 href="https://api.whatsapp.com/send?phone=905338461515"
