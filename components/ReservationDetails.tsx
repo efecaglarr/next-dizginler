@@ -1,11 +1,12 @@
 "use client"
 import { Fragment, useEffect, useState } from 'react';
-import { CarProps } from '@/types';
+import { CarProps, MailTemplateProps } from '@/types';
 import Image from 'next/image';
 import { Dialog, Transition } from '@headlessui/react';
 import { generateCarImageUrl } from '@/utils';
 import { CustomInput } from './Booking';
 import { cars, uniqueCarModels } from '@/constants/cars';
+import { compileWelcomeTemplate, sendMail } from "../utils/mail";
 
 interface CarDetailsProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ const fieldNames: { [key: string]: string } = {
   deliveryDate: "Teslim Etme Tarihi",
 };
 
+
 const ReservationDetails = ({ isOpen, closeModal, reservation }: CarDetailsProps) => {
   const [car, setCar] = useState<CarProps>(cars[0]);
 
@@ -36,10 +38,6 @@ const ReservationDetails = ({ isOpen, closeModal, reservation }: CarDetailsProps
 
     return
   };
-
-  const handleChange = (event: { name: string, value: string }) => {
-
-  }
 
   return (
     <>
@@ -107,13 +105,13 @@ const ReservationDetails = ({ isOpen, closeModal, reservation }: CarDetailsProps
 
                       <div className='flex-1 flex flex-col gap-2 mt-4'>
                         <div className='mt-3 flex flex-wrap gap-4'>
-                        <p className='font-semibold text-lg'>
-                          Lütfen bilgilerinizi girin : 
-                        </p>
-                          <Form />
-                        <h2 className='font-semibold text-xl capitalize'>
-                          {car.make} {car.model}
-                        </h2>
+                          <p className='font-semibold text-lg'>
+                            Lütfen bilgilerinizi girin :
+                          </p>
+                          <Form reservation={reservation} />
+                          <h2 className='font-semibold text-xl capitalize'>
+                            {car.make} {car.model}
+                          </h2>
 
                           <div className='flex justify-between gap-5 w-full text-right'>
                             <h4 className='text-gray-500 capitalize'>Ücret</h4>
@@ -151,40 +149,156 @@ const ReservationDetails = ({ isOpen, closeModal, reservation }: CarDetailsProps
 export default ReservationDetails
 
 
-const Form = () => {
+const Form = ({ reservation }: { reservation: { [key: string]: string } }) => {
+  const [formData, setFormData] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    age: "",
+    message: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const emailTemplate = {
+        name: formData.firstName || "Kullanıcı",
+        lastName: formData.lastName || "",
+        price: reservation.price || "Bilinmiyor",
+        pickupLocation: reservation.pickupLocation || "Bilinmiyor",
+        pickupTime: reservation.pickupTime || "Bilinmiyor",
+      };
+
+      console.log("Final Email Template:", emailTemplate);
+
+      const emailBody = await compileWelcomeTemplate(emailTemplate);
+
+      await sendMail({
+        to: formData.email,
+        name: `${formData.firstName} ${formData.lastName}`,
+        subject: "Dizgin Auto Rezervasyon Bilgileri",
+        body: emailBody,
+      });
+
+      alert("Rezervasyon başarıyla gönderildi!");
+    } catch (error) {
+      console.error("Error sending email:", error);
+      alert("Rezervasyon gönderilirken bir hata oluştu.");
+    }
+  };
+
   return (
-
-    <form className="w-full mx-auto">
+    <form onSubmit={handleSubmit} className="w-full mx-auto">
       <div className="relative z-0 w-full mb-5 group">
-        <input type="email" name="floating_email" id="floating_email" className="form_input" placeholder=" " required />
-        <label htmlFor="floating_email" className="form_label">Mail Adresiniz</label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          className="form_input"
+          placeholder=" "
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+        <label htmlFor="email" className="form_label">
+          Mail Adresiniz
+        </label>
       </div>
 
       <div className="grid md:grid-cols-2 md:gap-6">
         <div className="relative z-0 w-full mb-5 group">
-          <input type="text" name="floating_first_name" id="floating_first_name" className="form_input" placeholder=" " required />
-          <label htmlFor="floating_first_name" className="form_label">Adınız</label>
+          <input
+            type="text"
+            name="firstName"
+            id="firstName"
+            className="form_input"
+            placeholder=" "
+            value={formData.firstName}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="firstName" className="form_label">
+            Adınız
+          </label>
         </div>
         <div className="relative z-0 w-full mb-5 group">
-          <input type="text" name="floating_last_name" id="floating_last_name" className="form_input" placeholder=" " required />
-          <label htmlFor="floating_last_name" className="form_label">Soyadınız</label>
+          <input
+            type="text"
+            name="lastName"
+            id="lastName"
+            className="form_input"
+            placeholder=" "
+            value={formData.lastName}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="lastName" className="form_label">
+            Soyadınız
+          </label>
         </div>
       </div>
+
       <div className="grid md:grid-cols-2 md:gap-6">
         <div className="relative z-0 w-full mb-5 group">
-          <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="floating_phone" id="floating_phone" className="form_input" placeholder=" " required />
-          <label htmlFor="floating_phone" className="form_label">Numaranız</label>
+          <input
+            type="tel"
+            name="phone"
+            id="phone"
+            className="form_input"
+            placeholder=" "
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="phone" className="form_label">
+            Numaranız
+          </label>
         </div>
         <div className="relative z-0 w-full mb-5 group">
-          <input type="number" name="floating_age" id="floating_age" className="form_input" placeholder=" " required />
-          <label htmlFor="floating_age" className="form_label">Yaşınız</label>
+          <input
+            type="number"
+            name="age"
+            id="age"
+            className="form_input"
+            placeholder=" "
+            value={formData.age}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="age" className="form_label">
+            Yaşınız
+          </label>
         </div>
       </div>
+
       <div className="relative z-0 w-full mb-5 group">
-          <label htmlFor="floating_age" id="floating_message"  className="form_label">Mesaj Bırakın (İsteğe bağlı)</label>
-        <textarea name="message" id="message" cols={50} rows={2} className='form_input'></textarea>
-        </div>
-      <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Gönder</button>
+        <textarea
+          name="message"
+          id="message"
+          cols={50}
+          rows={2}
+          className="form_input"
+          placeholder=" "
+          value={formData.message}
+          onChange={handleChange}
+        ></textarea>
+        <label htmlFor="message" className="form_label">
+          Mesaj Bırakın (İsteğe bağlı)
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        Gönder
+      </button>
     </form>
-  )
-}
+  );
+};

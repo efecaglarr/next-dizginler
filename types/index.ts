@@ -57,7 +57,7 @@ export interface CustomInputProps {
 
 export interface DatePickerProps {
     name: string;
-    title: string
+    title: string;
     onChange: (event: {title: string, value: string}) => void;
 }
 
@@ -70,3 +70,18 @@ export interface ShowMoreProps {
     pageNumber: number;
     isNext: boolean;
 };
+
+export interface SendMailProps {
+    to : string
+    name : string
+    subject : string
+    body?: string | Promise<string>; // Hem string hem Promise<string> kabul eder
+}
+
+export interface MailTemplateProps {
+    name: string;
+    lastName: string;
+    price: string;
+    pickupLocation: string;
+    pickupTime: string;
+}
