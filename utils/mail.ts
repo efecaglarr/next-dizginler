@@ -15,10 +15,11 @@ export async function sendMail({ to, name, subject, body }: SendMailProps) {
             pass : SMTP_PASSWORD // sender's password
         }
     });
-
+    console.log("SMTP_MAIL:", process.env.SMTP_MAIL);
+    console.log("SMTP_PASSWORD:", process.env.SMTP_PASSWORD);
     try {
-        const testResult = await transport.verify()
-        console.log(testResult);
+        const result = await transport.verify()
+        console.log(result);
         
     } catch (error) {
         console.log(error);
