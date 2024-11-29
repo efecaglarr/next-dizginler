@@ -10,7 +10,7 @@ This project is a full-stack car rental application that includes a modern landi
 - **Additional Libraries**: React, React-Quill, Image Optimization (Next.js Image)
 
 ### Backend
-- **Email Service**: Custom mail function (using SMTP or external APIs like Nodemailer)
+- **Email Service**: Custom mail function (using SMTP and external APIs like Nodemailer)
 - **Utilities**: JavaScript, TypeScript
 - **State Management**: React Hooks
 
